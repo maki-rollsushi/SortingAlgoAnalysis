@@ -5,16 +5,20 @@
 //Morcozo, Janna
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 //Function Prototypes
-void selectionSort (int[] input);
-void bubbleSort (int[] input);
-void insertionSort (int[] input);
-void mergeSort (int[] input);
-void quickSort (int[] input);
-void heapSort (int[] input);
+void selectionSort ();
+void bubbleSort ();
+void insertionSort ();
+void mergeSort ();
+void quickSort ();
+void heapSort ();
 
+//global var
+double cpu_time_used;
 
 
 
@@ -55,13 +59,12 @@ void printCenter(char* text) {
 
 
 int main(){
-{
-    system("clear"); 
+    system("cls"); 
     int choice;
     int validInput;
 
     while (1) {
-        system("clear");
+        system("cls");
         printf("\n\n");
 
         // Display title
@@ -77,7 +80,7 @@ int main(){
 
         // Menu options
         printf("\t1. Selection Sort\n");
-        printf("\n\t2. Bubble Sort\n");
+        printf("\t2. Bubble Sort\n");
         printf("\t3. Insertion Sort\n");
         printf("\t4. Merge Sort\n");
         printf("\t5. Quicksort\n");
@@ -123,16 +126,119 @@ int main(){
                     printf("\n\tExiting...");
                     load();
                     system("clear");
-                    return;                     
+                    return 0;                     
                     break;
+            }
 
         } else {
             printf("\n\tInvalid choice. Please enter a number between 0 and 9.");
             load();
             printf("\n\n");
-            system("clear");
+            system("cls");
         }
     }
 }
+
+void selectionSort (){
+
+    //ask for number of inputs here
+
+
+
+
+
+    clock_t start, end;
+    start = clock();
+
+    // start sorting operationhere
+
+
+    end = clock();
+    cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+}
+void bubbleSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+
+}
+void insertionSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+
+}
+void mergeSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+
+}
+void quickSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+
+}
+void heapSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+
 }
 
