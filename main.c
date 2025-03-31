@@ -75,7 +75,11 @@ void printCenter(char* text) {
 
 int main(){
     system("cls"); 
-    int N, X, choiceS, choiceN, choiceD;
+    int choiceN;
+    int choiceD;
+    int choice;
+    int N;
+    int X;
     int validInput;
 
     while (1) {
@@ -92,9 +96,9 @@ int main(){
             printCenter(title[i]);
         }
         printf("\n");
-         // Prompt user to enter the number of integers (N) to be sorted
+         // Prompt user to enter the number of integers 👎 to be sorted
         while (1) {
-            printf("\nSelect number of integers (N) to be sorted:");
+            printf("\nSelect number of integers 👎 to be sorted:");
             printf("\n1. 10      4. 10000");
             printf("\n2. 100     5. 100000");
             printf("\n3. 1000    6. 1000000");
@@ -191,7 +195,7 @@ int main(){
                     quickSort();
                     break;
                 case 6:
-                    heapSort();
+                    heapSort(input, N);
                     printf("\nHeap Sort: %.2f seconds\n", cpu_time_used);
                     break;
                 case 0:
@@ -298,13 +302,6 @@ void quickSort (){
         cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
 
 }
-void heapSort (){
-        //ask for number of inputs here
-
-        clock_t start, end;
-        start = clock();
-    
-        // start sorting operationhere
 // Function to heapify a subtree rooted at index i
 void maxHeapify(int arr[], int n, int i) {
     int largest = i; 
