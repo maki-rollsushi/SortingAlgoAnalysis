@@ -9,7 +9,7 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_RANGE 1000000
+#define MAX_RANGE 2^32
 
 //Function Prototypes
 void selectionSort ();
@@ -18,7 +18,7 @@ void insertionSort ();
 void mergeSort ();
 void quickSort ();
 void heapSort ();
-void printarray();
+void fprintarray();
 void arrayincrementgenerator();
 void arrayrandomgenerator();
 void swap();
@@ -26,6 +26,7 @@ int sizearray();
 int partition();
 
 //global var
+FILE *file; 
 double cpu_time_used;
 
 
@@ -43,7 +44,7 @@ void load(void){
 void loadFast(void){
     int dots = 0;
     while (dots < 5) {          
-        for (long i = 0; i < 1010000; i++);
+        for(long i = 0; i < 1010000; i++);
             dots++;
     }
 }
@@ -71,7 +72,8 @@ int main(){
     int validInput;
     int size;
     int genarray;
-    long int* arr;
+    unsigned int* arr;
+    file = fopen("output.txt", "w");
 
     while (1) {
         system("cls");
@@ -112,7 +114,7 @@ int main(){
         }
 
         size = sizearray();
-        arr = malloc(size * sizeof(int));  // Dynamically allocate memory
+        arr = malloc(size * sizeof(unsigned int));  // Dynamically allocate memory
         if (arr == NULL) {
             printf("Memory allocation failed.\n");
             return 1;  // Exit if memory allocation fails
@@ -129,8 +131,8 @@ int main(){
         else
             printf("Invalid input.");
 
-        printf("\n\n\tOriginal array: ");
-        printarray(arr, size);
+        fprintf(file, "\n\n\tOriginal array: ");
+        fprintarray(file, arr, size);
 
         if (choice >= 0 && choice <= 9) {
             switch (choice) {
@@ -160,16 +162,18 @@ int main(){
                     break;
             }
 
-            printf("\n\n\tSorted array: ");
-            printarray(arr, size);
+            fprintf(file, "\n\n\tSorted array: ");
+            fprintarray(file, arr, size);
+            fprintf(file, "\n\tTime: %f", cpu_time_used);
             printf("\n\tTime: %f", cpu_time_used);
 
             printf("\n\n\tDo you want to run again? \n\t1) Try Again \n\t2) Exit \n\t3) Answer: ");
             int ans;
             scanf("%d", &ans);
 
-            if(ans == 1)
+            if(ans == 2)
                 break;
+
         } else {
             printf("\n\tInvalid choice. Please enter a number between 0 and 9.");
             load();
@@ -186,13 +190,13 @@ int sizearray(){
     return size;
 }
 
-void swap(long int *a, long int *b){
-    int temp = *a;
+void swap(unsigned int *a, unsigned int *b){
+    unsigned int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void arrayrandomgenerator(long int arr[], int size){
+void arrayrandomgenerator(unsigned int arr[], int size){
     srand(time(NULL));
     for (int i = 0; i < size; i++) {
         // Generate a random number between 0 and MAX_RANGE
@@ -202,7 +206,7 @@ void arrayrandomgenerator(long int arr[], int size){
 }
 
 
-void arrayincrementgenerator(long int arr[], int size){
+void arrayincrementgenerator(unsigned int arr[], int size){
     int firstnum;
     printf("\tEnter the first number: ");
     scanf("%d", &firstnum);
@@ -214,11 +218,11 @@ void arrayincrementgenerator(long int arr[], int size){
 }
 
 
-void printarray(long int arr[], long int size){
+void fprintarray(FILE *file, unsigned int arr[], int size){
     for(int i = 0; i < size; i++){
-        printf("%d ", arr[i]);
+        fprintf(file, "%lu ", arr[i]);
     }
-    printf("\n");
+    fprintf(file, "\n\t");
 }
 
 void selectionSort (){
@@ -292,7 +296,7 @@ void mergeSort (){
 
 }
 
-int partition(long int arr[], int low, int high){
+int partition(unsigned int arr[], int low, int high){
     int p = arr[low];  // pivot is the first element
     int i = low + 1;   // start from the next element
     int j = high;
@@ -319,7 +323,7 @@ int partition(long int arr[], int low, int high){
     return j; // return partition index
 }
 
-void quickSort(long int arr[], int low, int high){
+void quickSort(unsigned int arr[], int low, int high){
         clock_t start, end;
         start = clock();
         
