@@ -9,6 +9,8 @@
 #include <string.h>
 #include <time.h>
 
+#define MAX_RANGE 1000000
+
 //Function Prototypes
 void selectionSort ();
 void bubbleSort ();
@@ -20,7 +22,20 @@ void heapSort ();
 //global var
 double cpu_time_used;
 
+// Random Number Generator
+void generateRandomNumbers(long int array[], int N) {
+    srand(time(0));
+    for (int i = 0; i < N; i++) {
+        array[i] = rand() % (MAX_RANGE + 1);
+    }
+}
 
+// Increasing Sequence
+void generateIncreasingSequence(long int array[], int N, int X) {
+    for (int i = 0; i < N; i++) {
+        array[i] = X + i;
+    }
+}
 
 //just for aesthetics
 void load(void){
@@ -77,7 +92,63 @@ int main(){
             printCenter(title[i]);
         }
         printf("\n");
+         // Prompt user to enter the number of integers (N) to be sorted
+        while (1) {
+            printf("\nSelect number of integers (N) to be sorted:");
+            printf("\n1. 10      4. 10000");
+            printf("\n2. 100     5. 100000");
+            printf("\n3. 1000    6. 1000000");
+            printf("\nEnter your choice: ");
+            scanf("%d", &choiceN);
 
+            switch (choiceN) {
+                case 1: N = 10;
+                    break;
+                case 2: N = 100;
+                    break;
+                case 3: N = 1000;
+                    break;
+                case 4: N = 10000;
+                    break;
+                case 5: N = 100000;
+                    break;
+                case 6: N = 1000000;
+                    break;
+                default: printf("\nInvalid choice. Please enter a number between 1 and 6.\n");
+                    load();
+                    continue;
+            }
+            break;
+        }
+        
+        // Declare array with size N
+        long int input[N];
+
+        // Select data generation method
+        while (1) {
+            printf("\nData Generation Method");
+            printf("\n1. Randomly Generated Integers");
+            printf("\n2. Increasing Sequence");
+            printf("\n0. Exit");
+            printf("\nEnter your choice: ");
+            scanf("%d", &choiceD);
+
+            if (choiceD == 0) {
+                printf("\nExiting program...\n");
+                return 0;
+            } else if (choiceD == 1) {
+                generateRandomNumbers(input, N);
+                break;
+            } else if (choiceD == 2) {
+                printf("\nEnter the starting value of the sequence: ");
+                scanf("%d", &X);
+                generateIncreasingSequence(input, N, X);
+                break;
+            } else {
+                printf("\n\tInvalid choice. Please enter a number between 0 and 2.\n");
+                load();
+            }
+        }
         // Menu options
         printf("\t1. Selection Sort\n");
         printf("\t2. Bubble Sort\n");
@@ -136,6 +207,8 @@ int main(){
             printf("\n\n");
             system("cls");
         }
+
+        
     }
 }
 
