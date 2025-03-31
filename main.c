@@ -192,6 +192,7 @@ int main(){
                     break;
                 case 6:
                     heapSort();
+                    printf("\nHeap Sort: %.2f seconds\n", cpu_time_used);
                     break;
                 case 0:
                     printf("\n\tExiting...");
