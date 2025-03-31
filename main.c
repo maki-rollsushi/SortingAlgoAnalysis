@@ -5,17 +5,28 @@
 //Morcozo, Janna
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
+#define MAX_RANGE 1000000
+
 //Function Prototypes
-void selectionSort (int[] input);
-void bubbleSort (int[] input);
-void insertionSort (int[] input);
-void mergeSort (int[] input);
-void quickSort (int[] input);
-void heapSort (int[] input);
+void selectionSort ();
+void bubbleSort ();
+void insertionSort ();
+void mergeSort ();
+void quickSort ();
+void heapSort ();
+void printarray();
+void arrayincrementgenerator();
+void arrayrandomgenerator();
+void swap();
+int sizearray();
+int partition();
 
-
+//global var
+double cpu_time_used;
 
 
 //just for aesthetics
@@ -55,13 +66,15 @@ void printCenter(char* text) {
 
 
 int main(){
-{
-    system("clear"); 
+    system("cls"); 
     int choice;
     int validInput;
+    int size;
+    int genarray;
+    long int* arr;
 
     while (1) {
-        system("clear");
+        system("cls");
         printf("\n\n");
 
         // Display title
@@ -77,7 +90,7 @@ int main(){
 
         // Menu options
         printf("\t1. Selection Sort\n");
-        printf("\n\t2. Bubble Sort\n");
+        printf("\t2. Bubble Sort\n");
         printf("\t3. Insertion Sort\n");
         printf("\t4. Merge Sort\n");
         printf("\t5. Quicksort\n");
@@ -85,7 +98,6 @@ int main(){
         printf("\t0. Exit\n\n");
 
         printf("\n\tEnter your choice: ");
-        
         validInput = scanf("%d", &choice);
 
         // Clear input buffer
@@ -98,6 +110,27 @@ int main(){
             system("clear");
             continue;
         }
+
+        size = sizearray();
+        arr = malloc(size * sizeof(int));  // Dynamically allocate memory
+        if (arr == NULL) {
+            printf("Memory allocation failed.\n");
+            return 1;  // Exit if memory allocation fails
+        }
+
+        printf("\n\n\tHow would you like your array to be generated?");
+        printf("\n\t1) Random \n\t2) Incremental \n\tEnter your answer: ");
+        scanf("%d", &genarray);
+
+        if(genarray == 1)
+            arrayrandomgenerator(arr, size);
+        else if(genarray == 2)
+            arrayincrementgenerator(arr, size);
+        else
+            printf("Invalid input.");
+
+        printf("\n\n\tOriginal array: ");
+        printarray(arr, size);
 
         if (choice >= 0 && choice <= 9) {
             switch (choice) {
@@ -114,7 +147,7 @@ int main(){
                     mergeSort();
                     break;
                 case 5:
-                    quickSort();
+                    quickSort(arr, 0, size-1);
                     break;
                 case 6:
                     heapSort();
@@ -123,16 +156,199 @@ int main(){
                     printf("\n\tExiting...");
                     load();
                     system("clear");
-                    return;                     
+                    return 0;                     
                     break;
+            }
 
+            printf("\n\n\tSorted array: ");
+            printarray(arr, size);
+            printf("\n\tTime: %f", cpu_time_used);
+
+            printf("\n\n\tDo you want to run again? \n\t1) Try Again \n\t2) Exit \n\t3) Answer: ");
+            int ans;
+            scanf("%d", &ans);
+
+            if(ans == 1)
+                break;
         } else {
             printf("\n\tInvalid choice. Please enter a number between 0 and 9.");
             load();
             printf("\n\n");
-            system("clear");
+            system("cls");
         }
     }
 }
+
+int sizearray(){
+    int size;
+    printf("\tEnter the size of your array: ");
+    scanf("%d", &size);
+    return size;
 }
 
+void swap(long int *a, long int *b){
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void arrayrandomgenerator(long int arr[], int size){
+    srand(time(NULL));
+    for (int i = 0; i < size; i++) {
+        // Generate a random number between 0 and MAX_RANGE
+        int random_number = rand() % (MAX_RANGE + 1);
+        arr[i] = random_number;
+    }
+}
+
+
+void arrayincrementgenerator(long int arr[], int size){
+    int firstnum;
+    printf("\tEnter the first number: ");
+    scanf("%d", &firstnum);
+
+    for(int i = 0; i < size; i++){
+        arr[i] = firstnum;
+        firstnum++;
+    }
+}
+
+
+void printarray(long int arr[], long int size){
+    for(int i = 0; i < size; i++){
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+void selectionSort (){
+
+    //ask for number of inputs here
+
+
+
+
+
+    clock_t start, end;
+    start = clock();
+
+    // start sorting operationhere
+
+
+    end = clock();
+    cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+}
+
+void bubbleSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+
+}
+
+void insertionSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+}
+
+void mergeSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+
+}
+
+int partition(long int arr[], int low, int high){
+    int p = arr[low];  // pivot is the first element
+    int i = low + 1;   // start from the next element
+    int j = high;
+
+    while(i <= j){
+        // find element greater than the pivot from the left
+        while(i <= high && arr[i] <= p){
+            i++;
+        }
+
+        // find element smaller than the pivot from the right
+        while(arr[j] > p){
+            j--;
+        }
+
+        // if i < j, swap the elements
+        if(i < j){
+            swap(&arr[i], &arr[j]);
+        }
+    }
+
+    // finally, place the pivot in its correct position by swapping
+    swap(&arr[low], &arr[j]);
+    return j; // return partition index
+}
+
+void quickSort(long int arr[], int low, int high){
+        clock_t start, end;
+        start = clock();
+        
+        if(low < high){
+            // call partition function to find partition index
+            int pi = partition(arr, low, high);
+    
+            // recursively call quicksort for the left and right parts
+            quickSort(arr, low, pi-1);
+            quickSort(arr, pi+1, high);
+        }
+
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+}
+void heapSort (){
+        //ask for number of inputs here
+
+
+
+
+
+        clock_t start, end;
+        start = clock();
+    
+        // start sorting operationhere
+    
+    
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+
+}
