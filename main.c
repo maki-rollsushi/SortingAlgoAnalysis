@@ -75,7 +75,7 @@ void printCenter(char* text) {
 
 int main(){
     system("cls"); 
-    int choice;
+    int N, X, choiceS, choiceN, choiceD;
     int validInput;
 
     while (1) {
@@ -305,52 +305,54 @@ void heapSort (){
         start = clock();
     
         // start sorting operationhere
+// Function to heapify a subtree rooted at index i
+void maxHeapify(int arr[], int n, int i) {
+    int largest = i; 
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
 
-        void maxHeapify(int arr[], int n, int i) { 
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
 
-            int largest = i; // initialize largest as root
-            int left = 2 * i + 1; //left child
-            int right = 2 * i + 2; //right child
-            
-            // if left child is larger than root
-            if (left < n && arr[left] > arr[largest])
-                largest = left;
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
 
-            // if right child is larger than root
-            if (right < n && arr[right] > arr[largest])
-                largest = right;
-            
-            // if largest is not root, swap and continue heapifying
-            if (largest != i) {
-                int temp = arr[i];
-                arr[i] = arr[largest];
-                arr[largest] = temp;
+    if (largest != i) {
+        int temp = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = temp;
 
-            maxHeapify(arr, n, largest);
-            }
-        }
-
-        // function to build a Max-Heap from the given array
-        void buildMaxHeap(int arr[], int n) {
-            for (int i = n/2 - 1; i>= 0; i--){
-                maxHeapify(arr, n, i);
-            }
-        }
-
-        // function to perform Heap Sort
-        performmHeapSort(int arr[], int n) {
-            buildMaxHeap(arr, n);
-
-            for (int i = n - 1; i > 0; i--) {
-                int temp = arr[0];
-                arr[0] = arr[i];
-                arr[i] = temp;
-
-                maxHeapify(arr, i, 0);
-            }
-        }
-        end = clock();
-        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
-
+        maxHeapify(arr, n, largest);
+    }
 }
 
+// Function to build a max heap
+void buildMaxHeap(int arr[], int n) {
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        maxHeapify(arr, n, i);
+    }
+}
+
+// Function to perform heap sort
+void performHeapSort(int arr[], int n) {
+    buildMaxHeap(arr, n);
+
+    for (int i = n - 1; i > 0; i--) {
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+
+        maxHeapify(arr, i, 0);
+    }
+}
+
+// Main heapSort function
+void heapSort(int arr[], int n) {
+    clock_t start, end;
+    start = clock();
+
+    performHeapSort(arr, n);
+
+    end = clock();
+    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+}
