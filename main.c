@@ -17,6 +17,7 @@ void bubbleSort ();
 void insertionSort ();
 void mergeSort ();
 void quickSort ();
+void copyquicksort();
 void heapSort ();
 void fprintarray();
 void arrayincrementgenerator();
@@ -323,19 +324,21 @@ int partition(unsigned int arr[], int low, int high){
     return j; // return partition index
 }
 
+void copyquicksort(unsigned int arr[], int low, int high){
+    if(low < high){
+        // call partition function to find partition index
+        int pi = partition(arr, low, high);
+
+        // recursively call quicksort for the left and right parts
+        copyquicksort(arr, low, pi-1);
+        copyquicksort(arr, pi+1, high);
+    }
+}
+
 void quickSort(unsigned int arr[], int low, int high){
         clock_t start, end;
         start = clock();
-        
-        if(low < high){
-            // call partition function to find partition index
-            int pi = partition(arr, low, high);
-    
-            // recursively call quicksort for the left and right parts
-            quickSort(arr, low, pi-1);
-            quickSort(arr, pi+1, high);
-        }
-
+        copyquicksort(arr, low, high);
         end = clock();
         cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
 }
