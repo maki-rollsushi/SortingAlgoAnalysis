@@ -24,7 +24,8 @@ void arrayincrementgenerator();
 void arrayrandomgenerator();
 void swap();
 int sizearray();
-int partition();
+long int partition();
+long int medianOfThree();
 
 //global var
 FILE *file; 
@@ -73,7 +74,7 @@ int main(){
     int validInput;
     int size;
     int genarray;
-    unsigned int* arr;
+    long int* arr;
     file = fopen("output.txt", "w");
 
     while (1) {
@@ -191,13 +192,13 @@ int sizearray(){
     return size;
 }
 
-void swap(unsigned int *a, unsigned int *b){
+void swap(long int *a, long int *b){
     unsigned int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void arrayrandomgenerator(unsigned int arr[], int size){
+void arrayrandomgenerator(long int arr[], int size){
     srand(time(NULL));
     for (int i = 0; i < size; i++) {
         // Generate a random number between 0 and MAX_RANGE
@@ -207,7 +208,7 @@ void arrayrandomgenerator(unsigned int arr[], int size){
 }
 
 
-void arrayincrementgenerator(unsigned int arr[], int size){
+void arrayincrementgenerator(long int arr[], int size){
     int firstnum;
     printf("\tEnter the first number: ");
     scanf("%d", &firstnum);
@@ -219,7 +220,7 @@ void arrayincrementgenerator(unsigned int arr[], int size){
 }
 
 
-void fprintarray(FILE *file, unsigned int arr[], int size){
+void fprintarray(FILE *file, long int arr[], int size){
     for(int i = 0; i < size; i++){
         fprintf(file, "%lu ", arr[i]);
     }
@@ -297,51 +298,55 @@ void mergeSort (){
 
 }
 
-int partition(unsigned int arr[], int low, int high){
-    int p = arr[low];  // pivot is the first element
-    int i = low + 1;   // start from the next element
-    int j = high;
+long int medianOfThree(long int arr[], int low, int high) {
+    int mid = low + (high - low) / 2;  // Calculate the middle index
 
-    while(i <= j){
-        // find element greater than the pivot from the left
-        while(i <= high && arr[i] <= p){
-            i++;
-        }
+    // Swap values to ensure arr[low] contains the median
+    if (arr[mid] < arr[low]) 
+        swap(&arr[mid], &arr[low]);
+    if (arr[high] < arr[low]) 
+        swap(&arr[high], &arr[low]);
+    if (arr[mid] > arr[high]) 
+        swap(&arr[mid], &arr[high]);
 
-        // find element smaller than the pivot from the right
-        while(arr[j] > p){
-            j--;
-        }
-
-        // if i < j, swap the elements
-        if(i < j){
-            swap(&arr[i], &arr[j]);
-        }
-    }
-
-    // finally, place the pivot in its correct position by swapping
-    swap(&arr[low], &arr[j]);
-    return j; // return partition index
+    // The median is now stored at arr[mid], so swap it with arr[low] to use as pivot
+    swap(&arr[mid], &arr[low]);
+    
+    return arr[low];  // Return pivot value
 }
 
-void copyquicksort(unsigned int arr[], int low, int high){
-    if(low < high){
-        // call partition function to find partition index
-        int pi = partition(arr, low, high);
+long int partition(long int arr[], int low, int high) {
+    int p = medianOfThree(arr, low, high);  // Used median of three as pivot
+    int i = low + 1;  
+    int j = high;
 
-        // recursively call quicksort for the left and right parts
+    while (i <= j) {
+        while (i <= high && arr[i] <= p) i++;  // Move right if smaller
+        while (arr[j] > p) j--;                // Move left if larger
+        
+        if (i < j) swap(&arr[i], &arr[j]);  // Swap misplaced elements
+    }
+
+    swap(&arr[low], &arr[j]);  // Place pivot in its correct position
+    return j;  
+}
+
+void copyquicksort(long int arr[], int low, int high){
+    if(low < high){
+        int pi = partition(arr, low, high);
         copyquicksort(arr, low, pi-1);
         copyquicksort(arr, pi+1, high);
     }
 }
 
-void quickSort(unsigned int arr[], int low, int high){
+void quickSort(long int arr[], int low, int high){
         clock_t start, end;
         start = clock();
         copyquicksort(arr, low, high);
         end = clock();
         cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
 }
+
 void heapSort (){
         //ask for number of inputs here
 
