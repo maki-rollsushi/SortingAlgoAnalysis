@@ -82,7 +82,7 @@ void printCenter(char *text) {
 
 // Main function
 int main() {
-    system("cls");
+    system("cls || clear");     // Clear the console screen
 
     // Open output file
     FILE *file; 
