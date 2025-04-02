@@ -9,6 +9,7 @@
  *      Morcozo, Janna Carla R.
 */
 
+// Header files
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,7 +18,7 @@
 // Constants
 #define MAX_RANGE 1000000
 
-// Function Prototypes (Sorting Algorithms)
+// Function prototypes (Sorting Algorithms)
 void selectionSort(long int arr[], int N);
 void bubbleSort(long int arr[], int N);
 void insertionSort(long int arr[], int N);
@@ -188,6 +189,7 @@ int main() {
     return 0;       // Exit the program
 }
 
+// Function to get the size of the array from the user
 int sizeArray() {
     int N;
     printf("\n\tEnter the size of your array: ");
@@ -195,6 +197,7 @@ int sizeArray() {
     return N;
 }
 
+// Function to generate array values based on user input
 void initArrayAndGet(long int arr[], int N) {
     long int genarray;
     do {
@@ -212,6 +215,7 @@ void initArrayAndGet(long int arr[], int N) {
         arrayIncrementGenerator(arr, N);
 }
 
+// Function to generate random values for the array
 void arrayRandomGenerator(long int arr[], int N) {
     srand(time(NULL));
     for (int i = 0; i < N; i++) {
@@ -219,6 +223,7 @@ void arrayRandomGenerator(long int arr[], int N) {
     }
 }
 
+// Function to generate increasing sequence of values for the array
 void arrayIncrementGenerator(long int arr[], int N) {
     int X;
     printf("\n\tEnter your starting value: ");
