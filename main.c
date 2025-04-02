@@ -188,7 +188,6 @@ int main() {
     return 0;       // Exit the program
 }
 
-
 int sizeArray() {
     int N;
     printf("\n\tEnter the size of your array: ");
