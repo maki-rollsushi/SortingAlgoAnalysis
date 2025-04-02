@@ -23,11 +23,11 @@ void bubbleSort(long int arr[], int N);
 void insertionSort(long int arr[], int N);
 void mergeSort(long int arr[], int N);
 void merge(long int arr[], int left, int mid, int right);
-void mergeSortRecursive(long int arr[], int left, int right);
+void performMergeSort(long int arr[], int left, int right);
 void quickSort(long int arr[], int N);
-void copyQuickSort(long int arr[], int low, int high);
 long int medianOfThree(long int arr[], int low, int high);
 long int partition(long int arr[], int low, int high);
+void performQuickSort(long int arr[], int low, int high);
 void heapSort(long int arr[], int N);
 void maxHeapify(long int arr[], int N, int i);
 void buildMaxHeap(long int arr[], int N);
@@ -305,7 +305,7 @@ void mergeSort(long int arr[], int N){
         start = clock();
 
         // Mergesort operation
-        mergeSortRecursive(arr, 0, N - 1);
+        performMergeSort(arr, 0, N - 1);
 
         end = clock();
         cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
@@ -360,11 +360,11 @@ void merge(long int arr[], int left, int mid, int right) {
 }
 
 // Recursive function to implement mergesort
-void mergeSortRecursive(long int arr[], int left, int right) {
+void performMergeSort(long int arr[], int left, int right) {
     if (left < right) {
         int mid = left + (right - left) / 2;        // Find the middle index of the current segment
-        mergeSortRecursive(arr, left, mid);         // Recursively sort the left half of the array
-        mergeSortRecursive(arr, mid + 1, right);    // Recursively sort the right half of the array
+        performMergeSort(arr, left, mid);         // Recursively sort the left half of the array
+        performMergeSort(arr, mid + 1, right);    // Recursively sort the right half of the array
         merge(arr, left, mid, right);               // Merge the two sorted halves
     }
 }
@@ -375,18 +375,18 @@ void quickSort(long int arr[], int N){
     start = clock();
 
     // Quicksort operation
-    copyQuickSort(arr, 0, N - 1);
+    performQuickSort(arr, 0, N - 1);
     
     end = clock();
     cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
 }
 
 // Recursive function to perform quicksort using the median-of-three method
-void copyQuickSort(long int arr[], int low, int high){
+void performQuickSort(long int arr[], int low, int high){
     if(low < high){
         int pi = partition(arr, low, high);     // Partition the array and get the pivot index
-        copyQuickSort(arr, low, pi-1);          // Recursively sort the left subarray (elements less than the pivot)
-        copyQuickSort(arr, pi+1, high);         // Recursively sort the right subarray (elements greater than the pivot)
+        performQuickSort(arr, low, pi-1);          // Recursively sort the left subarray (elements less than the pivot)
+        performQuickSort(arr, pi+1, high);         // Recursively sort the right subarray (elements greater than the pivot)
     }
 }
 
