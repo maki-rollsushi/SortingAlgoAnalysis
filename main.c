@@ -36,11 +36,13 @@ void performHeapSort(long int arr[], int N);
 
 // Helper functions
 int sizeArray();
+long int *copyArray(long int arr[], int N);
 void initArrayAndGet(long int arr[], int N);
 void arrayRandomGenerator(long int arr[], int N);
 void arrayIncrementGenerator(long int arr[], int N);
 void swap(long int *a, long int *b);
 void printArray(FILE *file, long int arr[], int N);
+void printRuntime(FILE *file, char *sortName, double time);
 
 // Global variable
 double cpu_time_used;
@@ -96,52 +98,18 @@ int main() {
     int N;              // Number of integers to be sorted (array size)
     long int *arr;      // Input array
 
-    while (1) {
-        printf("\n\n");
+    printf("\n\n");
 
-        // Display title
-        char *title[] = {
-            "|------------------------|",
-            "|-- SORTING ALGORITHMS --|",
-            "|------------------------|"
-        };
-        for (int i = 0; i < 3; i++) {
-            printCenter(title[i]);
-        }
-        printf("\n");
-
-        // Menu options
-        printf("\t1. Selection Sort\n");
-        printf("\t2. Bubble Sort\n");
-        printf("\t3. Insertion Sort\n");
-        printf("\t4. Mergesort\n");
-        printf("\t5. Quicksort\n");
-        printf("\t6. Heapsort\n");
-        printf("\t0. Exit\n");
-
-        printf("\n\tEnter your choice: ");
-        if (scanf("%d", &choice) != 1) {
-            printf("\n\tInvalid input. Please enter a number between 0 and 6.");
-            while (getchar() != '\n');  // Clear input buffer
-            continue;
-        }
-
-        if (choice == 0){
-            printf("\n\n\tExiting...");
-            fclose(file);   // Close the file
-            load();
-            return 0;
-            break;
-        }
-
-        if (choice < 0 || choice > 6) {
-            printf("\n\tInvalid choice. Please enter a number between 0 and 6.");
-            load();
-            printf("\n\n");
-            continue;
-        }
-        break;  // Exit the loop if valid input is received  
+    // Display title
+    char *title[] = {
+        "|----------------------------------------------|",
+        "|-- EMPIRICAL ANALYSIS OF SORTING ALGORITHMS --|",
+        "|----------------------------------------------|"
+    };
+    for (int i = 0; i < 3; i++) {
+        printCenter(title[i]);
     }
+    printf("\n");
 
     N = sizeArray();
     arr = malloc(N * sizeof(long int));             // Dynamically allocate memory
@@ -157,32 +125,45 @@ int main() {
     fprintf(file, "\n\tOriginal array: ");
     printArray(file, arr, N);
 
-    // Sort the array based on user choice
-    switch (choice) {
-        case 1:
-            selectionSort(arr, N);
-            break;
-        case 2:
-            bubbleSort(arr, N);
-            break;
-        case 3:
-            insertionSort(arr, N);
-            break;
-        case 4:
-            mergeSort(arr, N);
-            break;
-        case 5:
-            quickSort(arr, N);
-            break;
-        case 6:
-            heapSort(arr, N);
-            break;
-    }
+    // Sort the array using six sorting algorithms
+    // Selection sort
+    long int *arrSelect = copyArray(arr, N);
+    selectionSort(arrSelect, N);
+    printRuntime(file, "Selection Sort", cpu_time_used);
+    free(arrSelect);
 
-    fprintf(file, "\n\n\tSorted array: ");
+    // Bubble sort
+    long int *arrBubble = copyArray(arr, N);
+    bubbleSort(arrBubble, N);
+    printRuntime(file, "Bubble Sort", cpu_time_used);
+    free(arrBubble);
+
+    // Insertion sort
+    long int *arrInsert = copyArray(arr, N);
+    insertionSort(arrInsert, N);
+    printRuntime(file, "Insertion Sort", cpu_time_used);
+    free(arrInsert);
+
+    // Mergesort
+    long int *arrMerge = copyArray(arr, N);
+    mergeSort(arrMerge, N);
+    printRuntime(file, "Mergesort", cpu_time_used);
+    free(arrMerge);
+
+    // Quicksort
+    long int *arrQuick = copyArray(arr, N);
+    quickSort(arrQuick, N);
+    printRuntime(file, "Quicksort", cpu_time_used);
+    free(arrQuick);
+
+    // Heapsort
+    long int *arrHeap = copyArray(arr, N);
+    heapSort(arrHeap, N);
+    printRuntime(file, "Heapsort", cpu_time_used);
+    free(arrHeap);
+
+    fprintf(file, "\n\tSorted array: ");
     printArray(file, arr, N);
-    fprintf(file, "\n\tTime: %fs\n", cpu_time_used);
-    printf("\n\tTime: %fs\n", cpu_time_used);
 
     free(arr);      // Free allocated memory
     fclose(file);   // Close the file
@@ -195,6 +176,19 @@ int sizeArray() {
     printf("\n\tEnter the size of your array: ");
     scanf("%d", &N);
     return N;
+}
+
+// Function to create a copy of the array
+long int *copyArray(long int arr[], int N) {
+    long int *copy = malloc(N * sizeof(long int)); // Allocate memory for the copy
+    if (copy == NULL) {
+        printf("\n\tMemory allocation failed.\n");
+        return NULL; // Return NULL if memory allocation fails
+    }
+    for (int i = 0; i < N; i++) {
+        copy[i] = arr[i]; // Copy elements from the original array
+    }
+    return copy; // Return the copied array
 }
 
 // Function to generate array values based on user input
@@ -500,4 +494,10 @@ void printArray(FILE *file, long int arr[], int N){
         fprintf(file, "%lu ", arr[i]);
     }
     fprintf(file, "\n\t");
+}
+
+// Function to print the runtime of each sorting algorithm
+void printRuntime(FILE *file, char *sortName, double time) {
+    fprintf(file, "\n\t%s Time: %fs\n", sortName, time);
+    printf("\n\t%s Time: %fs\n", sortName, time);
 }
