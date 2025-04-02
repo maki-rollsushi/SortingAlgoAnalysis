@@ -129,41 +129,50 @@ int main() {
     // Selection sort
     long int *arrSelect = copyArray(arr, N);
     selectionSort(arrSelect, N);
+    fprintf(file, "\n\tSorted array using Selection Sort: ");
+    printArray(file, arrSelect, N);
     printRuntime(file, "Selection Sort", cpu_time_used);
     free(arrSelect);
 
     // Bubble sort
     long int *arrBubble = copyArray(arr, N);
     bubbleSort(arrBubble, N);
+    fprintf(file, "\n\tSorted array using Bubble Sort: ");
+    printArray(file, arrBubble, N);
     printRuntime(file, "Bubble Sort", cpu_time_used);
     free(arrBubble);
 
     // Insertion sort
     long int *arrInsert = copyArray(arr, N);
     insertionSort(arrInsert, N);
+    fprintf(file, "\n\tSorted array using Insertion Sort: ");
+    printArray(file, arrInsert, N);
     printRuntime(file, "Insertion Sort", cpu_time_used);
     free(arrInsert);
 
     // Mergesort
     long int *arrMerge = copyArray(arr, N);
     mergeSort(arrMerge, N);
+    fprintf(file, "\n\tSorted array using Mergesort: ");
+    printArray(file, arrMerge, N);
     printRuntime(file, "Mergesort", cpu_time_used);
     free(arrMerge);
 
     // Quicksort
     long int *arrQuick = copyArray(arr, N);
     quickSort(arrQuick, N);
+    fprintf(file, "\n\tSorted array using Quicksort: ");
+    printArray(file, arrQuick, N);
     printRuntime(file, "Quicksort", cpu_time_used);
     free(arrQuick);
 
     // Heapsort
     long int *arrHeap = copyArray(arr, N);
     heapSort(arrHeap, N);
+    fprintf(file, "\n\tSorted array using Heapsort: ");
+    printArray(file, arrHeap, N);
     printRuntime(file, "Heapsort", cpu_time_used);
     free(arrHeap);
-
-    fprintf(file, "\n\tSorted array: ");
-    printArray(file, arr, N);
 
     free(arr);      // Free allocated memory
     fclose(file);   // Close the file
