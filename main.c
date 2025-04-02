@@ -1,100 +1,109 @@
-// Cadag, Jaycee
-// Dela Cruz, Mark 
-// Espinas, A Z Rain
-// Lovina, John Melrick
-// Morcozo, Janna Carla
+/* Programming Project 1: EMPIRICAL ANALYSIS OF SORTING ALGORITHMS
+ *  Subject: CS 111 - Design and Analysis of Algorithms
+ *  Course and Bloc: BSCS 2A
+ *  Project Members:
+ *      Cadag, Jaycee D.
+ *      Dela Cruz, Mark L.
+ *      Espinas, A Z Rain L.
+ *      Lovina, John Melrick M.
+ *      Morcozo, Janna Carla R.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+// Constants
 #define MAX_RANGE 1000000
 
-// Function Prototypes
-// Sorting Algorithms
-void selectionSort (long int array[], int N);
-void bubbleSort (long int array[], int N);
-void insertionSort ();
-void mergeSort ();
-void quickSort ();
-void heapSort ();
+// Function Prototypes (Sorting Algorithms)
+void selectionSort(long int arr[], int N);
+void bubbleSort(long int arr[], int N);
+void insertionSort(long int arr[], int N);
+void mergeSort(long int arr[], int N);
+void merge(long int arr[], int left, int mid, int right);
+void mergeSortRecursive(long int arr[], int left, int right);
+void quickSort(long int arr[], int N);
+void copyQuickSort(long int arr[], int low, int high);
+long int medianOfThree(long int arr[], int low, int high);
+long int partition(long int arr[], int low, int high);
+void heapSort(long int arr[], int N);
+void maxHeapify(long int arr[], int N, int i);
+void buildMaxHeap(long int arr[], int N);
+void performHeapSort(long int arr[], int N);
 
-// Global Variable
+// Helper functions
+int sizeArray();
+void initArrayAndGet(long int arr[], int N);
+void arrayRandomGenerator(long int arr[], int N);
+void arrayIncrementGenerator(long int arr[], int N);
+void swap(long int *a, long int *b);
+void printArray(FILE *file, long int arr[], int N);
+
+// Global variable
 double cpu_time_used;
 
-// Data Generation Methods
-// Random Number Generator
-void generateRandomNumbers(long int array[], int N) {
-    srand(time(0));
-    for (int i = 0; i < N; i++) {
-        array[i] = rand() % (MAX_RANGE + 1);
-    }
-}
-
-// Increasing Sequence
-void generateIncreasingSequence(long int array[], int N, int X) {
-    for (int i = 0; i < N; i++) {
-        array[i] = X + i;
-    }
-}
-
 // Functions for aesthetics
-void load(void){
+void load(void) {
     int dots = 0;
     while (dots < 6) {
-        printf(".");      
-        fflush(stdout);     
+        printf(".");
+        fflush(stdout);
         for (long i = 0; i < 101000000; i++);
-            dots++;
+        dots++;
     }
     printf("\n");
 }
-void loadFast(void){
+
+void loadFast(void) {
     int dots = 0;
-    while (dots < 5) {          
+    while (dots < 5) {
         for (long i = 0; i < 1010000; i++);
-            dots++;
+        dots++;
     }
 }
-void printCenter(char* text) {
-    int width = 80;  
+
+void printCenter(char *text) {
+    int width = 80;
     int len = strlen(text);
 
-
-    int padding = (width-len)/2;
+    int padding = (width - len) / 2;
     // Print the padding
-    for (int i =0; i < padding; i++) {
+    for (int i = 0; i < padding; i++) {
         printf(" ");
     }
-    
+
     // Print the text
     loadFast();
     printf("%s\n", text);
 }
 
-int main(){
-    system("cls"); 
-    int N, X, choiceS, choiceN, choiceD;
-    int validInput;
+// Main function
+int main() {
+    system("cls");
 
     // Open output file
-    FILE *ofp = fopen("output.txt", "w");
-    if (!ofp) {
-        printf("Error opening file!\n");
+    FILE *file; 
+    file = fopen("output.txt", "w");
+    if (file == NULL) {
+        printf("Error opening file.\n");
         return 1;
     }
 
+    int choice;         // User's choice for sorting algorithm
+    int N;              // Number of integers to be sorted (array size)
+    long int *arr;      // Input array
+
     while (1) {
-        system("cls");
         printf("\n\n");
 
         // Display title
-        char* title[] = {
-            "|------------------------|", 
+        char *title[] = {
+            "|------------------------|",
             "|-- SORTING ALGORITHMS --|",
             "|------------------------|"
-        }; 
+        };
         for (int i = 0; i < 3; i++) {
             printCenter(title[i]);
         }
@@ -104,272 +113,165 @@ int main(){
         printf("\t1. Selection Sort\n");
         printf("\t2. Bubble Sort\n");
         printf("\t3. Insertion Sort\n");
-        printf("\t4. Merge Sort\n");
+        printf("\t4. Mergesort\n");
         printf("\t5. Quicksort\n");
-        printf("\t6. HeapSort\n");
-        printf("\t0. Exit\n\n");
+        printf("\t6. Heapsort\n");
+        printf("\t0. Exit\n");
 
         printf("\n\tEnter your choice: ");
-        
-        validInput = scanf("%d", &choiceS);
-
-        // Clear input buffer
-        while (getchar() != '\n');
-
-        if (validInput != 1) {
-            printf("\n\tInvalid input. Please enter a number between 0 and 9.");
-            load();
-            printf("\n\n");
-            system("clear");
+        if (scanf("%d", &choice) != 1) {
+            printf("\n\tInvalid input. Please enter a number between 0 and 6.");
+            while (getchar() != '\n');  // Clear input buffer
             continue;
         }
 
-        // Prompt user to enter the number of integers (N) to be sorted
-        while (1) {
-            printf("\nSelect number of integers (N) to be sorted:");
-            printf("\n1. 10      4. 10000");
-            printf("\n2. 100     5. 100000");
-            printf("\n3. 1000    6. 1000000");
-            printf("\nEnter your choice: ");
-            scanf("%d", &choiceN);
-
-            switch (choiceN) {
-                case 1: N = 10;
-                    break;
-                case 2: N = 100;
-                    break;
-                case 3: N = 1000;
-                    break;
-                case 4: N = 10000;
-                    break;
-                case 5: N = 100000;
-                    break;
-                case 6: N = 1000000;
-                    break;
-                default: printf("\nInvalid choice. Please enter a number between 1 and 6.\n");
-                    load();
-                    continue;
-            }
+        if (choice == 0){
+            printf("\n\n\tExiting...");
+            fclose(file);   // Close the file
+            load();
+            return 0;
             break;
         }
-        
-        // Declare array with size N
-        long int input[N];
 
-        // Select data generation method
-        while (1) {
-            printf("\nData Generation Method");
-            printf("\n1. Randomly Generated Integers");
-            printf("\n2. Increasing Sequence");
-            printf("\n0. Exit");
-            printf("\nEnter your choice: ");
-            scanf("%d", &choiceD);
-
-            if (choiceD == 0) {
-                printf("\nExiting program...\n");
-                return 0;
-            } else if (choiceD == 1) {
-                generateRandomNumbers(input, N);
-                break;
-            } else if (choiceD == 2) {
-                printf("\nEnter the starting value of the sequence: ");
-                scanf("%d", &X);
-                generateIncreasingSequence(input, N, X);
-                break;
-            } else {
-                printf("\n\tInvalid choice. Please enter a number between 0 and 2.\n");
-                load();
-            }
-        }
-
-        // Write original data to output file
-        fprintf(ofp, "Original Data: ");
-        for (int i = 0; i < N; i++) {
-            fprintf(ofp, "%d ", input[i]);
-        }
-        fprintf(ofp, "\n\n");
-
-        if (choiceS >= 0 && choiceS <= 9) {
-            switch (choiceS) {
-                case 1:
-                    selectionSort(input, N);
-                    printf("\nSelection Sort Time: %.2f seconds\n", cpu_time_used);
-
-                    // Write sorted data to output file
-                    fprintf(ofp, "Sorted Data using Selection Sort: ");
-                    for (int i = 0; i < N; i++) {
-                        fprintf(ofp, "%d ", input[i]);
-                    }
-                    fprintf(ofp, "\n");
-                    break;
-                case 2:
-                    bubbleSort(input, N);
-                    printf("\nBubble Sort Time: %.2f seconds\n", cpu_time_used);
-                    break;
-                case 3:
-                    insertionSort();
-                    break;
-                case 4:
-                    mergeSort();
-                    break;
-                case 5:
-                    quickSort();
-                    break;
-                case 6:
-                    heapSort();
-                    break;
-                case 0:
-                    printf("\n\tExiting...");
-                    load();
-                    system("clear");
-                    return 0;                     
-                    break;
-            }
-        } else {
-            printf("\n\tInvalid choice. Please enter a number between 0 and 9.");
+        if (choice < 0 || choice > 6) {
+            printf("\n\tInvalid choice. Please enter a number between 0 and 6.");
             load();
             printf("\n\n");
-            system("cls");
+            continue;
         }
+        break;  // Exit the loop if valid input is received  
+    }
+
+    N = sizeArray();
+    arr = malloc(N * sizeof(long int));             // Dynamically allocate memory
+    if (arr == NULL) {
+        printf("\n\tMemory allocation failed.\n");
+        fclose(file);                               // Close the file
+        return 1;                                   // Exit if memory allocation fails
+    }
+
+    // Initialize the array based on user input
+    initArrayAndGet(arr, N);
+    
+    fprintf(file, "\n\tOriginal array: ");
+    printArray(file, arr, N);
+
+    // Sort the array based on user choice
+    switch (choice) {
+        case 1:
+            selectionSort(arr, N);
+            break;
+        case 2:
+            bubbleSort(arr, N);
+            break;
+        case 3:
+            insertionSort(arr, N);
+            break;
+        case 4:
+            mergeSort(arr, N);
+            break;
+        case 5:
+            quickSort(arr, N);
+            break;
+        case 6:
+            heapSort(arr, N);
+            break;
+    }
+
+    fprintf(file, "\n\n\tSorted array: ");
+    printArray(file, arr, N);
+    fprintf(file, "\n\tTime: %fs\n", cpu_time_used);
+    printf("\n\tTime: %fs\n", cpu_time_used);
+
+    free(arr);      // Free allocated memory
+    fclose(file);   // Close the file
+    return 0;       // Exit the program
+}
+
+
+int sizeArray() {
+    int N;
+    printf("\n\tEnter the size of your array: ");
+    scanf("%d", &N);
+    return N;
+}
+
+void initArrayAndGet(long int arr[], int N) {
+    long int genarray;
+    do {
+        printf("\n\tHow would you like your array values to be generated?");
+        printf("\n\t1) Random \n\t2) Incremental \n\tEnter your answer: ");
+        scanf("%d", &genarray);
+        if(genarray != 1 && genarray != 2){
+            printf("\n\tInvalid input. Please input 1 or 2.\n");
+        }
+    } while(genarray != 1 && genarray != 2);
+
+    if (genarray == 1)
+        arrayRandomGenerator(arr, N);
+    else
+        arrayIncrementGenerator(arr, N);
+}
+
+void arrayRandomGenerator(long int arr[], int N) {
+    srand(time(NULL));
+    for (int i = 0; i < N; i++) {
+        arr[i] = rand() % (MAX_RANGE + 1);
     }
 }
 
-void selectionSort (long int array[], int N) {
+void arrayIncrementGenerator(long int arr[], int N) {
+    int X;
+    printf("\n\tEnter your starting value: ");
+    scanf("%d", &X);
+
+    for (int i = 0; i < N; i++) {
+        arr[i] = X + i;
+    }
+}
+
+// Selection sort
+void selectionSort(long int arr[], int N){
     clock_t start, end;
     start = clock();
 
+    // Selection sort operation
     int i, j, minIndex, temp;
+
+    // Loop through the array to find the smallest element
     for (i = 0; i < N - 1; i++) {
-        // Find the index of the smallest (minimum) element
         minIndex = i;
         for (j = i + 1; j < N; j++) {
-            if (array[j] < array[minIndex]) {
+            if (arr[j] < arr[minIndex]) {
                 minIndex = j;
             }
         }
         // Swap the smallest element with the current element
-        temp = array[i];
-        array[i] = array[minIndex];
-        array[minIndex] = temp;
+        temp = arr[i];
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
     }
 
     end = clock();
     cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
 }
-void bubbleSort (long int array[], int N) {
-        clock_t start, end;
-        start = clock();
 
-        for (int i = 0; i < N - 1; i++) {
-            for (int j = 0; j < N - i - 1; j++) {
-                // Compare adjacent elements
-                if (array[j] > array[j + 1]) {
-                    // Swap if the current element is greater than the next element
-                    int temp = array[j];
-                    array[j] = array[j + 1];
-                    array[j + 1] = temp;
-                }   
-            }
-        }
-    
-        end = clock();
-        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
-}
-void insertionSort () {
-        //ask for number of inputs here
-
-
-
-
-
-        clock_t start, end;
-        start = clock();
-    
-        // start sorting operation here
-    
-    
-        end = clock();
-        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
-
-}
-void mergeSort () {
-        //ask for number of inputs here
-
-
-
-
-
-        clock_t start, end;
-        start = clock();
-    
-        // start sorting operation here
-    
-    
-        end = clock();
-        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
-
-}
-void quickSort () {
-        //ask for number of inputs here
-
-
-
-
-
-        clock_t start, end;
-        start = clock();
-    
-        // start sorting operation here
-    
-    
-        end = clock();
-        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
-
-}
-void heapSort () {
+// Bubble sort
+void bubbleSort(long int arr[], int N){
     clock_t start, end;
     start = clock();
 
-    void maxHeapify(int arr[], int n, int i) { 
-        int largest = i; // initialize largest as root
-        int left = 2 * i + 1; // left child
-        int right = 2 * i + 2; // right child
-        
-        // if left child is larger than root
-        if (left < n && arr[left] > arr[largest])
-            largest = left;
-
-        // if right child is larger than root
-        if (right < n && arr[right] > arr[largest])
-            largest = right;
-        
-        // if largest is not root, swap and continue heapifying
-        if (largest != i) {
-            int temp = arr[i];
-            arr[i] = arr[largest];
-            arr[largest] = temp;
-
-            maxHeapify(arr, n, largest);
-        }
-    }
-
-    // Function to build a Max-Heap from the given array
-    void buildMaxHeap(int arr[], int n) {
-        for (int i = n/2 - 1; i>= 0; i--){
-            maxHeapify(arr, n, i);
-        }
-    }
-
-    // Function to perform Heap Sort
-    performmHeapSort(int arr[], int n) {
-        buildMaxHeap(arr, n);
-
-        for (int i = n - 1; i > 0; i--) {
-            int temp = arr[0];
-            arr[0] = arr[i];
-            arr[i] = temp;
-
-            maxHeapify(arr, i, 0);
+    // Bubble sort operation
+    // Loop through the array to compare adjacent elements and swap them if they are in the wrong order
+    for (int i = 0; i < N - 1; i++) {
+        for (int j = 0; j < N - i - 1; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if the current element is greater than the next element
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
         }
     }
 
@@ -377,3 +279,221 @@ void heapSort () {
     cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
 }
 
+// Insertion sort
+void insertionSort(long int arr[], int N){
+    clock_t start, end;
+    start = clock();
+
+    // Insertion sort operation
+    // Loop through the array to insert each element into its correct position in the sorted section
+    for (int i = 1; i < N; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+
+    end = clock();
+    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+}
+
+// Mergesort
+void mergeSort(long int arr[], int N){
+        clock_t start, end;
+        start = clock();
+
+        // Mergesort operation
+        mergeSortRecursive(arr, 0, N - 1);
+
+        end = clock();
+        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+}
+
+// Function to merge two sorted subarrays into a single sorted array
+void merge(long int arr[], int left, int mid, int right) {
+    int i, j, k;
+    int n1 = mid - left + 1;    // Size of left subarray
+    int n2 = right - mid;       // Size of right subarray
+
+    // Temporary arrays to hold the left and right subarrays
+    long int leftArr[n1], rightArr[n2];
+
+    // Copy elements into left subarray
+    for (i = 0; i < n1; i++)
+        leftArr[i] = arr[left + i];
+    // Copy elements into right subarray
+    for (j = 0; j < n2; j++)
+        rightArr[j] = arr[mid + 1 + j];
+    
+    // Merge the two subarrays back into the main array
+    i = 0;
+    j = 0;
+    k = left;
+
+    // Compare elements from both subarrays and insert the smaller one into arr[]
+    while (i < n1 && j < n2) {
+        if (leftArr[i] <= rightArr[j]) {
+            arr[k] = leftArr[i];
+            i++;
+        } else {
+            arr[k] = rightArr[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy any remaining elements from the left subarray
+    while (i < n1) {
+        arr[k] = leftArr[i];
+        i++;
+        k++;
+    }
+
+    // Copy any remaining elements from the right subarray
+    while (j < n2) {
+        arr[k] = rightArr[j];
+        j++;
+        k++;
+    }
+}
+
+// Recursive function to implement mergesort
+void mergeSortRecursive(long int arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;        // Find the middle index of the current segment
+        mergeSortRecursive(arr, left, mid);         // Recursively sort the left half of the array
+        mergeSortRecursive(arr, mid + 1, right);    // Recursively sort the right half of the array
+        merge(arr, left, mid, right);               // Merge the two sorted halves
+    }
+}
+
+// Quicksort
+void quickSort(long int arr[], int N){
+    clock_t start, end;
+    start = clock();
+
+    // Quicksort operation
+    copyQuickSort(arr, 0, N - 1);
+    
+    end = clock();
+    cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+}
+
+// Recursive function to perform quicksort using the median-of-three method
+void copyQuickSort(long int arr[], int low, int high){
+    if(low < high){
+        int pi = partition(arr, low, high);     // Partition the array and get the pivot index
+        copyQuickSort(arr, low, pi-1);          // Recursively sort the left subarray (elements less than the pivot)
+        copyQuickSort(arr, pi+1, high);         // Recursively sort the right subarray (elements greater than the pivot)
+    }
+}
+
+// Function to choose the pivot using the median-of-three method
+long int medianOfThree(long int arr[], int low, int high) {
+    int mid = low + (high - low) / 2;  // Calculate the middle index
+
+    // Swap values to ensure arr[low] contains the median
+    if (arr[mid] < arr[low])
+        swap(&arr[mid], &arr[low]);
+    if (arr[high] < arr[low])
+        swap(&arr[high], &arr[low]);
+    if (arr[mid] > arr[high])
+        swap(&arr[mid], &arr[high]);
+
+    // The median is now stored at arr[mid], so swap it with arr[low] to use as pivot
+    swap(&arr[mid], &arr[low]);
+
+    return arr[low];    // Return pivot value
+}
+
+// Function to create partitions for quicksort
+long int partition(long int arr[], int low, int high) {
+    int p = medianOfThree(arr, low, high);      // Use median of three as pivot
+    int i = low + 1;
+    int j = high;
+
+    while (i <= j) {
+        while (i <= high && arr[i] <= p) i++;   // Move right if smaller
+        while (arr[j] > p) 
+            j--;                                // Move left if larger
+        if (i < j) swap(&arr[i], &arr[j]);      // Swap  elements
+    }
+
+    swap(&arr[low], &arr[j]);                   // Place pivot in its correct position
+    return j;
+}
+
+// Function to swap two elements
+void swap(long int *a, long int *b){
+    unsigned int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Heapsort
+void heapSort(long int arr[], int N){
+    clock_t start, end;
+    start = clock();
+
+    // Heapsort operation
+    performHeapSort(arr, N);
+
+    end = clock();
+    cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+}
+
+// Recursive function to max-heapify the input array
+void maxHeapify(long int arr[], int N, int i) {
+
+    int largest = i;        // Initialize largest as root
+    int left = 2 * i + 1;   // Left child
+    int right = 2 * i + 2;  // Right child
+
+    // If left child is larger than root
+    if (left < N && arr[left] > arr[largest])
+        largest = left;
+
+    // If right child is larger than root
+    if (right < N && arr[right] > arr[largest])
+        largest = right;
+
+    // If largest is not root, swap and continue heapifying
+    if (largest != i) {
+        int temp = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = temp;
+
+    maxHeapify(arr, N, largest);
+    }
+}
+
+// Function to build a max-heap from the given array
+void buildMaxHeap(long int arr[], int N) {
+    for (int i = N / 2 - 1; i >= 0; i--){
+        maxHeapify(arr, N, i);
+    }
+}
+
+// Function to perform heapsort
+void performHeapSort(long int arr[], int N) {
+    buildMaxHeap(arr, N);
+
+    for (int i = N - 1; i > 0; i--) {
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+
+        maxHeapify(arr, i, 0);
+    }
+}
+
+// Function to write the original and sorted data to the output file
+void printArray(FILE *file, long int arr[], int N){
+    for(int i = 0; i < N; i++){
+        fprintf(file, "%lu ", arr[i]);
+    }
+    fprintf(file, "\n\t");
+}
